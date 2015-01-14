@@ -1,4 +1,14 @@
 
+(ns tbaldridge-clojure-lecture.intro-to-csp
+  (:require [clojure.core.async :as a]))
+(comment
+  (-> (create-frame)
+      (add-body)
+      (map add-tire (make-tire 5))
+      (add-engine)
+      (ship-car))
+  )
+
 (def c 5)
 (-> c (+ 3) (/ 2) (- 1))
 (use 'clojure.walk)
@@ -20,3 +30,9 @@
                         V
                     (ship-car)
 )
+
+(def c (a/chan))
+
+(a/put! c "hello" (fn [_] (println "Done Sending")))
+
+(a/take! c (fn [val] (println val)))

@@ -1,7 +1,10 @@
 * This is a introduction of the basic concept of CSP and how to use it in Clojure
+
 ** This way of convey belt is not efficient at all
 
-#+begin_src clojure
+#+begin_src clojure :tangle intro-to-csp.clj
+(ns tbaldridge-clojure-lecture.intro-to-csp
+  (:require [clojure.core.async :as a]))
 (comment
 (-> (create-frame)
     (add-body)
@@ -12,11 +15,11 @@
 #+end_src
 
 ** About `->` macro
-threads the expr through the forms. Inserts x as the
-second item in the first form, making a list of it if it is not a
-list already. If there are more forms, inserts the first form as the
-second item in second form, etc.
-This code is from conj.io
+   threads the expr through the forms. Inserts x as the
+   second item in the first form, making a list of it if it is not a
+   list already. If there are more forms, inserts the first form as the
+   second item in second form, etc.
+   This code is from conj.io
 #+begin_src clojure :tangle intro-to-csp.clj
 (def c 5)
 (-> c (+ 3) (/ 2) (- 1))
@@ -51,6 +54,29 @@ This code is from conj.io
 )
 #+end_src
 
-#+begin_src clj :tangle intro-to-csp.cjl
+** Clojure Way for CSP
+
+#+begin_src clojure :tangle intro-to-csp.clj
+(def c (a/chan))
+(def a (a/chan))
+(a/put! c "hello" (fn [_] (println "Done Sending")))
+(a/take! c (fn [val] (println val))
+
+(a/go
+  (a/>! c "Hello")
+  (a/>! c "World"))
+
+(a/go
+  (println (a/<! c))
+  (println (a/<! c))))
+
+;; alt! is for fan-in and timeout to wait is available
+(println (a/alt! [c a (a/timeout 1000)]))
+#+end_src
+
+** CSP paper does not mention about buffer but with processes, creating buffers is possible
+#+begin_src clojure :tangle intro-to-csp.clj
+(a/go
+  (a/>! a (<! c)))
 
 #+end_src

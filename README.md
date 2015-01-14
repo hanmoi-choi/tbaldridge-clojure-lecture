@@ -1,3 +1,14 @@
-# tbaldridge-clojure-lecture
-## I would like to summarize codes and explanations from screencasts
-- [Clojure Tutorials - with Tim Baldridge](https://tbaldridge.pivotshare.com/)
+# default
+
+A Clojure library designed to ... well, that part is up to you.
+
+## Usage
+
+FIXME
+
+## License
+
+Copyright © 2015 FIXME
+
+Distributed under the Eclipse Public License either version 1.0 or (at
+your option) any later version.

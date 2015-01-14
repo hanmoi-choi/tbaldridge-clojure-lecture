@@ -2,15 +2,17 @@
 ** This way of convey belt is not efficient at all
 
 #+begin_src clojure
+(comment
 (-> (create-frame)
     (add-body)
     (map add-tire (make-tire 5))
     (add-engine)
     (ship-car))
+)
 #+end_src
 
-*** About `->` macro
-Threads the expr through the forms. Inserts x as the
+** About `->` macro
+threads the expr through the forms. Inserts x as the
 second item in the first form, making a list of it if it is not a
 list already. If there are more forms, inserts the first form as the
 second item in second form, etc.
@@ -22,15 +24,14 @@ This code is from conj.io
 (macroexpand-all '(-> c (+ 3) (/ 2) (- 1))) ; => (- (/ (+ c 3) 2) 1)
 #+end_src
 
-*** CSP consists os two elements
-**** Processes  ; In Cloure, Go block or Thread
-**** Queues    ; Channels having buffers (0-n)
+** CSP consists os two elements
+- Processes = In Cloure, Go block or Thread
+- Queues = Channels
+  - have buffers
+  - dropping buffer: drop newest input
+  - sliding buffer: drop oldest input
 
-***** Buffer has two types
-****** dropping buffer: drop newest input
-****** sliding buffer: drop oldest input
-
-*** Processes communicates each other via Channels
+** Processes communicates each other via Channels
 #+begin_src clojure :tangle intro-to-csp.clj
 (comment
                     (create-frame)               ;; each form is processes
@@ -48,4 +49,8 @@ This code is from conj.io
                         V
                     (ship-car)
 )
+#+end_src
+
+#+begin_src clj :tangle intro-to-csp.cjl
+
 #+end_src

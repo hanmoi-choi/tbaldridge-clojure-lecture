@@ -15,11 +15,9 @@
 #+end_src
 
 ** About `->` macro
-   threads the expr through the forms. Inserts x as the
-   second item in the first form, making a list of it if it is not a
-   list already. If there are more forms, inserts the first form as the
-   second item in second form, etc.
-   This code is from conj.io
+   threads the expr through the forms. Inserts x as the second item in the first form, making a list of it if it is not a list already.
+   If there are more forms, inserts the first form as the second item in second form, etc. This code is from conj.io
+
 #+begin_src clojure :tangle intro-to-csp.clj
 (def c 5)
 (-> c (+ 3) (/ 2) (- 1))
@@ -35,6 +33,7 @@
   - sliding buffer: drop oldest input
 
 ** Processes communicates each other via Channels
+
 #+begin_src clojure :tangle intro-to-csp.clj
 (comment
                     (create-frame)               ;; each form is processes
@@ -76,7 +75,15 @@
 
 ** CSP paper does not mention about buffer but with processes, creating buffers is possible
 #+begin_src clojure :tangle intro-to-csp.clj
-(a/go
-  (a/>! a (<! c)))
+(defn buffer [from]
+  (let [ret (a/chan)]
+    (a/go
+      (while true
+        (a/>! ret (a/<! from))
+      ret))))
+
+(def c (a/chan))
+(def a (buffer c))
+(def b (buffer a))
 
 #+end_src

@@ -1,0 +1,51 @@
+* This is a introduction of the basic concept of CSP and how to use it in Clojure
+** This way of convey belt is not efficient at all
+
+#+begin_src clojure
+(-> (create-frame)
+    (add-body)
+    (map add-tire (make-tire 5))
+    (add-engine)
+    (ship-car))
+#+end_src
+
+*** About `->` macro
+Threads the expr through the forms. Inserts x as the
+second item in the first form, making a list of it if it is not a
+list already. If there are more forms, inserts the first form as the
+second item in second form, etc.
+This code is from conj.io
+#+begin_src clojure :tangle intro-to-csp.clj
+(def c 5)
+(-> c (+ 3) (/ 2) (- 1))
+(use 'clojure.walk)
+(macroexpand-all '(-> c (+ 3) (/ 2) (- 1))) ; => (- (/ (+ c 3) 2) 1)
+#+end_src
+
+*** CSP consists os two elements
+**** Processes  ; In Cloure, Go block or Thread
+**** Queues    ; Channels having buffers (0-n)
+
+***** Buffer has two types
+****** dropping buffer: drop newest input
+****** sliding buffer: drop oldest input
+
+*** Processes communicates each other via Channels
+#+begin_src clojure :tangle intro-to-csp.clj
+(comment
+                    (create-frame)               ;; each form is processes
+                        |
+                        V
+                    (add-body)
+                        |    (make-tire 5)
+                        |         |  ;; faster , buffer size = 6000
+                        V         V
+(combine-tires-with-car) (combine-tires-with-car) ;; Use multiple processes for better performance
+                        |   ;; slower
+                        V
+                    (add-engine)
+                        |   ;; slower
+                        V
+                    (ship-car)
+)
+#+end_src

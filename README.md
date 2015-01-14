@@ -1,2 +1,3 @@
 # tbaldridge-clojure-lecture
-Summary and soruce codes for Site - tbaldridge.pivotshare.com/
+## I would like to summarize codes and explanations from screencasts
+- [Clojure Tutorials - with Tim Baldridge](https://tbaldridge.pivotshare.com/)

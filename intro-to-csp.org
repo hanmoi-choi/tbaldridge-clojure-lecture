@@ -4,7 +4,7 @@
 
 #+begin_src clojure :tangle intro-to-csp.clj
 (ns tbaldridge-clojure-lecture.intro-to-csp
-  (:require [clojure.core.async :as a]))
+    (:require [clojure.core.async :as a]))
 (comment
 (-> (create-frame)
     (add-body)
@@ -76,11 +76,11 @@
 ** CSP paper does not mention about buffer but with processes, creating buffers is possible
 #+begin_src clojure :tangle intro-to-csp.clj
 (defn buffer [from]
-  (let [ret (a/chan)]
-    (a/go
-      (while true
-        (a/>! ret (a/<! from))
-      ret))))
+    (let [ret (a/chan)]
+        (a/go
+            (while true
+                (a/>! ret (a/<! from))
+        ret))))
 
 (def c (a/chan))
 (def a (buffer c))

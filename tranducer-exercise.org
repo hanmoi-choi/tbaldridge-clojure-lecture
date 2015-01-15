@@ -1,0 +1,79 @@
+* I would like to exercise and remember about tranducer
+** This is from this site
+- [[http://elbenshira.com/blog/understanding-transducers/][Really good explanation for Tranducer]]
+
+** Power of reduce
+#+begin_src clojure :tangle no
+(map inc (range 10))
+(filter even? '(1 2 3 4 5 6 7 8 9 10))
+
+(defn map-inc-reducer [res in]
+  (conj res (inc in)))
+
+(reduce map-inc-reducer [] (range 10))
+
+(defn map-reducer
+  [f]
+  (fn [res in]
+    (conj res (f in))))
+;; (map-reducer inc) == (map-inc-reducer)
+(reduce (map-reducer inc) [] (range 10))
+
+(defn filter-even-reducer
+  [result input]
+  (if (even? input)
+    (conj result input)
+    result))
+(reduce filter-even-reducer [] '(1 2 3 4 5 6 7 8 9 10))
+
+(defn filter-reducer
+  [f]
+  (fn [res input]
+    (if (f input)
+      (conj res input)
+      res)))
+
+#+end_src
+
+** Another step in abstraction
+*** codes below have a common part *conj*, which is reducing funciton
+
+#+begin_src clojure :tangle no
+(defn map-reducer
+  [f]
+  (fn [result input]
+    (conj result (f input))))
+
+(defn filter-reducer
+  [predicate]
+  (fn [result input]
+    (if (predicate input)
+      (conj result input)
+      result)))
+#+end_src
+
+
+*** Let's pass *reducing fuction* as argument
+
+#+begin_src clojure :tangle no
+(defn mapping
+  [f]
+  (fn [reducing]
+    (fn [result input]
+      (reducing result (f input)))))
+
+(defn filtering
+  [predicate]
+  (fn [reducing]
+    (fn [result input]
+      (if (predicate input)
+        (reducing result input)
+        result))))
+#+end_src
+
+*** Arriving at transducers
+- type is (result, input) ⟶ result
+#+begin_src clojure :tangle no
+((mapping inc) conj
+((filtering even?) conj).
+#+end_src

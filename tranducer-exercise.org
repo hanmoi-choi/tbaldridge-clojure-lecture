@@ -52,8 +52,9 @@
       result)))
 #+end_src
 
-
+** Arrivaing at Tranducer
 *** Let's pass *reducing fuction* as argument
+- =(reduce conj [] (range 10))= here, *conj* is reducing function and its type is *(result, input) -> result*
 
 #+begin_src clojure :tangle no
 (defn mapping
@@ -72,8 +73,53 @@
 #+end_src
 
 *** Arriving at transducers
-- type is (result, input) ⟶ result
+**** both of them's type is (result, input) ⟶ result
 #+begin_src clojure :tangle no
-((mapping inc) conj
+((mapping inc) conj)
 ((filtering even?) conj).
+#+end_src
+
+**** so we could compose two functions like this
+- =((filtering even?) conj)='s return type is *(result, input) ⟶ result*
+- =(mapping inc)='s expected arg type is *(result, input) ⟶ result*
+#+begin_src clojure :tangle no
+((mapping inc) ((filtering even?) conj))
+#+end_src
+
+** Summary
+- *Tranducer* is a function which type is *(result, input ⟶ result) ⟶ (result, input ⟶ result)*
+- So =(mapping inc)= is +Tranducer+
+
+** Appendix
+*** Tranducer is coming in Clojure 1.7.0
+*** Transducer can work across core.async channels
+#+begin_src clojure :tangle no
+(defn square [x] (* x x))
+
+(def xform
+  (comp
+    (filter even?)
+    (filter #(< % 10))
+    (map square)
+    (map inc)))
+
+(def my-chan (async/chan 1 xform))
+
+; Waiting for an item to print...
+(async/take! my-chan println)
+
+(async/put! my-chan 3)
+; nothing printed to screen, since 3 is not even
+
+(async/put! my-chan 4)
+; "17" printed to screen, since 4 is even and less than 10
+#+end_src
+
+Note: Did you know this? I didn't.
+First, note that channel buffers are linked lists underneath (in fact, java.util.LinkedLists).
+When you put an item into a channel, the internal helper method add! is called to add your item into the buffer.
+
+But if a transducer xform is supplied, core.async will use add! as the reducing function passed into xform:
+#+begin_src clojure :tangle no
+(xform add!) ;; add!'s type is (result, input) -> input
 #+end_src

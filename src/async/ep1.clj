@@ -1,9 +1,6 @@
-(ns tbaldridge-clojure-lecture.clojure-async
+(ns async.ep1
   (:require [clojure.core.async :as a :refer [>!! <!! >! <!]]))
 
-;; Episode
-;; < input channel as argument
-;; > output channel as argument
 (let [ch (a/chan 2)]
   (>!! ch 43)
   (<!! (pipeline< [4 inc
